@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace AOC {
     class Program {
@@ -63,7 +61,7 @@ namespace AOC {
         }
         private static void testEverything() {
             var testInput = (string[])allInputs.Clone();
-            
+
         }
     }
 }
