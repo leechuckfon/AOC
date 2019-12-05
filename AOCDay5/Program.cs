@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
 namespace AOCDay5 {
     class Program {
+        #region declarations
         private static int[] allInputs = new int[999999];
         private static int index = 0;
         private static bool running = true;
+        #endregion
+        #region Main
         static void Main(string[] args) {
             calc();
             Console.ReadLine();
         }
-
+        #endregion
+        #region Calculate
         private static void calc() {
             var lines = File.ReadAllLines("input.txt");
             allInputs = lines[0].Split(',').Select(numberAsString => Int32.Parse(numberAsString.ToString())).ToArray();
@@ -51,9 +54,9 @@ namespace AOCDay5 {
                     case "99": opcode99(); break;
                 }
             }
-
         }
-
+        #endregion
+        #region helpers
         private static int[] GetParameters(int amountOfParameters) {
             List<int> numbers = new List<int>();
             for (int number = 1; number <= amountOfParameters; number++) {
@@ -61,20 +64,9 @@ namespace AOCDay5 {
             }
             return numbers.ToArray();
         }
-
-        private static void opcode1(int[] modes) {
-            int[] inputs = GetParameters(3);
-            index += 4;
-            ReplaceInputs(inputs, modes);
-            var toPutIn = inputs[0] + inputs[1];
-            int a = inputs[2];
-            allInputs[a] = toPutIn;
-        }
-
         private static int[] ReplaceInputs(int[] inputs, int[] modes) {
             for (int i = 0; i < modes.Length - 1; i++) {
                 if (modes[i] == 1) {
-
                 }
                 else if (modes[i] == 0) {
                     int b = inputs[i];
@@ -83,7 +75,16 @@ namespace AOCDay5 {
             }
             return inputs;
         }
-
+        #endregion
+        #region opcodes
+        private static void opcode1(int[] modes) {
+            int[] inputs = GetParameters(3);
+            index += 4;
+            ReplaceInputs(inputs, modes);
+            var toPutIn = inputs[0] + inputs[1];
+            int a = inputs[2];
+            allInputs[a] = toPutIn;
+        }
         private static void opcode2(int[] modes) {
             int[] inputs = GetParameters(3);
             index += 4;
@@ -92,31 +93,23 @@ namespace AOCDay5 {
             int a = inputs[2];
             allInputs[a] = toPutIn;
         }
-
         private static void opcode3() {
             Console.WriteLine("Write a god damn number!");
             int numberInput = Int32.Parse(Console.ReadLine().ToString());
-
             int[] parameters = GetParameters(1);
             index += 2;
-
             int a = parameters[0];
             allInputs[a] = numberInput;
         }
-
         private static void opcode4() {
             int[] parameters = GetParameters(1);
             index += 2;
             int a = parameters[0];
-
             Console.WriteLine(allInputs[a]);
         }
-
         private static void opcode5(int[] modes) {
             int[] inputs = GetParameters(2);
             ReplaceInputs(inputs, modes);
-
-
             if (inputs[0] != 0) {
                 index = inputs[1];
             }
@@ -124,11 +117,9 @@ namespace AOCDay5 {
                 index += 3;
             }
         }
-
         private static void opcode6(int[] modes) {
             int[] inputs = GetParameters(2);
             ReplaceInputs(inputs, modes);
-
             if (inputs[0] == 0) {
                 index = inputs[1];
             }
@@ -136,12 +127,10 @@ namespace AOCDay5 {
                 index += 3;
             }
         }
-
         private static void opcode7(int[] modes) {
             int[] inputs = GetParameters(3);
             index += 4;
             ReplaceInputs(inputs, modes);
-
             if (inputs[0] < inputs[1]) {
                 int a = inputs[2];
                 allInputs[a] = 1;
@@ -151,12 +140,10 @@ namespace AOCDay5 {
                 allInputs[a] = 0;
             }
         }
-
         private static void opcode8(int[] modes) {
             int[] inputs = GetParameters(3);
             index += 4;
             ReplaceInputs(inputs, modes);
-
             if (inputs[0] == inputs[1]) {
                 int a = inputs[2];
                 allInputs[a] = 1;
@@ -166,9 +153,9 @@ namespace AOCDay5 {
                 allInputs[a] = 0;
             }
         }
-
         private static void opcode99() {
             running = false;
         }
+        #endregion
     }
 }

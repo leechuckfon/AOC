@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-
 namespace AOCDay3 {
     public class ForRealsiesNow {
         #region Declarations
@@ -17,7 +16,6 @@ namespace AOCDay3 {
             CalculateFirstLine(lines[0], FirstLine);
             //CheckForSecond(lines[1]);
             CalculateFirstLine(lines[1], SecondLine);
-
             FirstLine.RemoveAt(0);
             SecondLine.RemoveAt(0);
             //Steps.RemoveAt(0);
@@ -31,11 +29,9 @@ namespace AOCDay3 {
         #region Failure
         private void CheckForSecond(string line) {
             var allInstructions = line.Split(',');
-
             foreach (var instruction in allInstructions) {
                 var direction = instruction[0].ToString();
                 var movement = Int32.Parse(instruction.Substring(1, instruction.Length - 1));
-
                 switch (direction.ToLower()) {
                     case "d": CROSSDOWN(movement); break;
                     case "u": CROSSUP(movement); break;
@@ -44,7 +40,6 @@ namespace AOCDay3 {
                 }
             }
         }
-
         private void CROSSDOWN(int movement) {
             var lastPos = SecondLine.Last();
             var interection = FirstLine.Find(pos => pos.x == lastPos.x && pos.y <= lastPos.y && pos.y >= lastPos.y - movement);
@@ -53,7 +48,6 @@ namespace AOCDay3 {
             }
             DOWN(movement, lastPos, SecondLine);
         }
-
         private void CROSSUP(int movement) {
             var lastPos = SecondLine.Last();
             var interection = FirstLine.Find(pos => pos.x == lastPos.x && pos.y >= lastPos.y && pos.y <= lastPos.y + movement);
@@ -62,7 +56,6 @@ namespace AOCDay3 {
             }
             UP(movement, lastPos, SecondLine);
         }
-
         private void CROSSRIGHT(int movement) {
             var lastPos = SecondLine.Last();
             var interection = FirstLine.Find(pos => pos.y == lastPos.y && pos.x >= lastPos.x && pos.x <= lastPos.x + movement);
@@ -71,7 +64,6 @@ namespace AOCDay3 {
             }
             RIGHT(movement, lastPos, SecondLine);
         }
-
         private void CROSSLEFT(int movement) {
             var lastPos = SecondLine.Last();
             var interection = FirstLine.Find(pos => pos.y == lastPos.y && pos.x <= lastPos.x && pos.x >= lastPos.x - movement);
@@ -84,11 +76,9 @@ namespace AOCDay3 {
         #region FillLine
         private void CalculateFirstLine(string line, List<Position> toFill) {
             var allInstructions = line.Split(',');
-
             foreach (var instruction in allInstructions) {
                 var direction = instruction[0].ToString();
                 var movement = Int32.Parse(instruction.Substring(1, instruction.Length - 1));
-
                 switch (direction.ToLower()) {
                     case "d": DOWN(movement, toFill.Last(), toFill); break;
                     case "u": UP(movement, toFill.Last(), toFill); break;
@@ -104,7 +94,6 @@ namespace AOCDay3 {
                 toFill.Add(toInsertPosition);
             }
         }
-
         private void DOWN(int number, Position p, List<Position> toFill) {
             for (int i = 1; i <= number; i++) {
                 var toInsertPosition = new Position() { x = p.x, y = p.y };
@@ -112,7 +101,6 @@ namespace AOCDay3 {
                 toFill.Add(toInsertPosition);
             }
         }
-
         private void LEFT(int number, Position p, List<Position> toFill) {
             for (int i = 1; i <= number; i++) {
                 var toInsertPosition = new Position() { x = p.x, y = p.y };
@@ -120,7 +108,6 @@ namespace AOCDay3 {
                 toFill.Add(toInsertPosition);
             }
         }
-
         private void RIGHT(int number, Position p, List<Position> toFill) {
             for (int i = 1; i <= number; i++) {
                 var toInsertPosition = new Position() { x = p.x, y = p.y };
@@ -134,24 +121,19 @@ namespace AOCDay3 {
             public bool Equals([DisallowNull] Position x, [DisallowNull] Position y) {
                 return x.x == y.x && x.y == y.y;
             }
-
             public int GetHashCode([DisallowNull] Position obj) {
                 return obj.x + obj.y;
             }
         }
-
         internal class Position : IEquatable<Position> {
             public Position() {
             }
-
             public Position(int x, int y) {
                 this.x = x;
                 this.y = y;
             }
-
             public int x { get; set; }
             public int y { get; set; }
-
             public bool Equals([AllowNull] Position other) {
                 return other.x == x && other.y == y;
             }
