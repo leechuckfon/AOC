@@ -17,8 +17,6 @@ namespace AOCDay5 {
             var lines = File.ReadAllLines("input.txt");
             allInputs = lines[0].Split(',').Select(numberAsString => Int32.Parse(numberAsString.ToString())).ToArray();
             while (running) {
-                //allInputs[1] = 12;
-                //allInputs[2] = 2;
                 var instruction = allInputs[index];
                 var instructionAsString = instruction.ToString();
                 string opcode;
