@@ -1,8 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Collections;
-using System.Collections.Generic;
-
 namespace AOC {
     class Program {
         private static string[] allInputs;
@@ -12,9 +9,7 @@ namespace AOC {
                     calc(i.ToString(), j.ToString());
                 }
             }
-
         }
-
         private static void calc(string i1, string i2) {
             string text = File.ReadAllText("input.txt");
             allInputs = text.Split(',');
@@ -29,7 +24,6 @@ namespace AOC {
                 var read = index * 4;
                 opcode = Int32.Parse(allInputs[read]);
                 if (opcode == 99) {
-
                     if (allInputs[0] == "19690720") {
                         Console.WriteLine(i1);
                         Console.WriteLine(i2);
@@ -44,7 +38,6 @@ namespace AOC {
                     case 1: opcode1(input1, input2, position); break;
                     case 2: opcode2(input1, input2, position); break;
                 }
-
                 index++;
             }
             if (allInputs[0] == "19690720") {
@@ -63,7 +56,6 @@ namespace AOC {
         }
         private static void testEverything() {
             var testInput = (string[])allInputs.Clone();
-            
         }
     }
 }
