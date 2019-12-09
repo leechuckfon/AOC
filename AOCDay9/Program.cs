@@ -109,7 +109,6 @@ namespace AOCDay5 {
             ReplaceInputs(inputs, modes);
             var toPutIn = inputs[0] + inputs[1];
             ReplaceIndex(inputs, modes);
-
             long a = inputs[2];
             allInputs[(int)a] = toPutIn;
         }
@@ -119,9 +118,7 @@ namespace AOCDay5 {
             ReplaceInputs(inputs, modes);
             var toPutIn = inputs[0] * inputs[1];
             ReplaceIndex(inputs, modes);
-
             long a = inputs[2];
-
             allInputs[(int)a] = toPutIn;
         }
         private static void opcode3(long[] modes) {

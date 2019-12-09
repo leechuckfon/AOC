@@ -4,32 +4,41 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace AOCDay7 {
-    class Amp {
-        #region declarations
-        private  int[] allInputs = new int[999999];
-        private  int index = 0;
-        private  List<int> firstInputs = new List<int>();
-        private  bool running = true;
-        private  bool isFirstInput = true;
-        private  int amplifierInput = 0;
-        private  List<int> allOutputs = new List<int>();
-        #endregion
+namespace Day6 {
+    public class AMP {
 
-        public Amp() {
+        #region declarations
+        private int[] allInputs = new int[999999];
+        private int index;
+        private bool running = true;
+        private bool _isFirstRun = true;
+        private int input = 0;
+        private int _permNumber = 0;
+        private int lastOutput = 0;
+        #endregion
+        #region Main
+        public AMP() {
             var lines = File.ReadAllLines("input.txt");
             allInputs = lines[0].Split(',').Select(numberAsString => Int32.Parse(numberAsString.ToString())).ToArray();
+            index = 0;
         }
-
-        #region calc
-        public  AmpState calc(int firstInput, int ampInput, int indexState, int[] vs) {
-            running = true;
-            if (vs != null) {
-                allInputs = vs;
+        #endregion
+        #region Calculate
+        public AmpState calc(bool IsFirstRun, int? pointer, int[] inputState, int outputFromLast, int permNumber) {
+            _isFirstRun = IsFirstRun;
+            if (inputState != null) {
+                allInputs = inputState;
             }
-            index = indexState;
-            amplifierInput = ampInput;
-            isFirstInput = true;
+
+            if (pointer.HasValue) {
+                index = pointer.Value;
+            } else {
+                index = 0;
+            }
+            _permNumber = permNumber;
+            input = outputFromLast;
+
+            running = true;
             while (running) {
                 var instruction = allInputs[index];
                 var instructionAsString = instruction.ToString();
@@ -56,27 +65,27 @@ namespace AOCDay7 {
                 switch (opcode.Replace("0", "")) {
                     case "1": opcode1(modes.ToArray()); break;
                     case "2": opcode2(modes.ToArray()); break;
-                    case "3": opcode3(firstInput); break;
-                    case "4": return opcode4(); break;
+                    case "3": opcode3(); break;
+                    case "4": return opcode4();
                     case "5": opcode5(modes.ToArray()); break;
                     case "6": opcode6(modes.ToArray()); break;
                     case "7": opcode7(modes.ToArray()); break;
                     case "8": opcode8(modes.ToArray()); break;
-                    case "99": return opcode99(); break;
+                    case "99": return opcode99();
                 }
             }
             return null;
         }
-#endregion
+        #endregion
         #region helpers
-        private  int[] GetParameters(int amountOfParameters) {
+        private int[] GetParameters(int amountOfParameters) {
             List<int> numbers = new List<int>();
             for (int number = 1; number <= amountOfParameters; number++) {
                 numbers.Add(allInputs[index + number]);
             }
             return numbers.ToArray();
         }
-        private  int[] ReplaceInputs(int[] inputs, int[] modes) {
+        private int[] ReplaceInputs(int[] inputs, int[] modes) {
             for (int i = 0; i < modes.Length - 1; i++) {
                 if (modes[i] == 1) {
                 }
@@ -89,7 +98,7 @@ namespace AOCDay7 {
         }
         #endregion
         #region opcodes
-        private  void opcode1(int[] modes) {
+        private void opcode1(int[] modes) {
             int[] inputs = GetParameters(3);
             index += 4;
             ReplaceInputs(inputs, modes);
@@ -97,7 +106,7 @@ namespace AOCDay7 {
             int a = inputs[2];
             allInputs[a] = toPutIn;
         }
-        private  void opcode2(int[] modes) {
+        private void opcode2(int[] modes) {
             int[] inputs = GetParameters(3);
             index += 4;
             ReplaceInputs(inputs, modes);
@@ -105,36 +114,37 @@ namespace AOCDay7 {
             int a = inputs[2];
             allInputs[a] = toPutIn;
         }
-        private  void opcode3(int firstInput) {
-            int numberInput;
-            if (isFirstInput) {
-                numberInput = firstInput;
-                isFirstInput = false;
+        private void opcode3() {
+            //Console.WriteLine("Write a god damn number!");
+            //int numberInput = Int32.Parse(Console.ReadLine().ToString());
+            var numberInput = 0;
+            if (_isFirstRun) {
+                numberInput = _permNumber;
+                _isFirstRun = false;
             }
             else {
-                numberInput = amplifierInput;
+                numberInput = input;
             }
             int[] parameters = GetParameters(1);
             index += 2;
             int a = parameters[0];
             allInputs[a] = numberInput;
         }
-        private  AmpState opcode4() {
+        private AmpState opcode4() {
             int[] parameters = GetParameters(1);
             index += 2;
             int a = parameters[0];
-            amplifierInput = allInputs[a];
+            lastOutput = allInputs[a];
             Console.WriteLine(allInputs[a]);
-            return new AmpState() {
-                Output = amplifierInput,
+            return new AmpState {
+                IndexState = index,
+                MemoryState = allInputs,
+                Output = lastOutput,
                 Paused = true,
-                Stopped = false,
-                StateIndex = index,
-                yas = allInputs
-
+                Stopped = false
             };
         }
-        private  void opcode5(int[] modes) {
+        private void opcode5(int[] modes) {
             int[] inputs = GetParameters(2);
             ReplaceInputs(inputs, modes);
             if (inputs[0] != 0) {
@@ -144,7 +154,7 @@ namespace AOCDay7 {
                 index += 3;
             }
         }
-        private  void opcode6(int[] modes) {
+        private void opcode6(int[] modes) {
             int[] inputs = GetParameters(2);
             ReplaceInputs(inputs, modes);
             if (inputs[0] == 0) {
@@ -154,7 +164,7 @@ namespace AOCDay7 {
                 index += 3;
             }
         }
-        private  void opcode7(int[] modes) {
+        private void opcode7(int[] modes) {
             int[] inputs = GetParameters(3);
             index += 4;
             ReplaceInputs(inputs, modes);
@@ -167,7 +177,7 @@ namespace AOCDay7 {
                 allInputs[a] = 0;
             }
         }
-        private  void opcode8(int[] modes) {
+        private void opcode8(int[] modes) {
             int[] inputs = GetParameters(3);
             index += 4;
             ReplaceInputs(inputs, modes);
@@ -180,24 +190,16 @@ namespace AOCDay7 {
                 allInputs[a] = 0;
             }
         }
-        private  AmpState opcode99() {
+        private AmpState opcode99() {
             running = false;
-            return new AmpState() {
-                Output = amplifierInput,
+            return new AmpState {
+                IndexState = index,
+                MemoryState = allInputs,
+                Output = lastOutput,
                 Paused = false,
-                Stopped = true,
-                StateIndex = index,
-                yas = allInputs
+                Stopped = true
             };
         }
         #endregion
-    }
-
-    public class AmpState {
-        public bool Paused { get; set; }
-        public bool Stopped { get; set; }
-        public int[] yas { get; set; }
-        public int Output { get; set; }
-        public int StateIndex { get; set; }
     }
 }
