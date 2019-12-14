@@ -6,23 +6,23 @@ using System.Linq;
 namespace AOCDay3 {
     public class ForRealsiesNow {
         #region Declarations
-        private readonly List<Position> FirstLine = new List<Position>() { new Position(0, 0) };
-        private readonly List<Position> SecondLine = new List<Position>() { new Position(0, 0) };
-        private readonly List<int> Steps = new List<int>();
+        private readonly List<Position> _firstLine = new List<Position>() { new Position(0, 0) };
+        private readonly List<Position> _secondLine = new List<Position>() { new Position(0, 0) };
+        private readonly List<int> _steps = new List<int>();
         #endregion
         #region RunnableFunction
         public void LetsGo() {
             var lines = File.ReadAllLines("input.txt");
-            CalculateFirstLine(lines[0], FirstLine);
+            CalculateFirstLine(lines[0], _firstLine);
             //CheckForSecond(lines[1]);
-            CalculateFirstLine(lines[1], SecondLine);
-            FirstLine.RemoveAt(0);
-            SecondLine.RemoveAt(0);
+            CalculateFirstLine(lines[1], _secondLine);
+            _firstLine.RemoveAt(0);
+            _secondLine.RemoveAt(0);
             //Steps.RemoveAt(0);
-            IEnumerable<Position> intersections = FirstLine.Intersect(SecondLine, new PositionEqualizer()).AsParallel();
+            IEnumerable<Position> intersections = _firstLine.Intersect(_secondLine, new PositionEqualizer()).AsParallel();
             var closest = intersections.Select(position => Math.Abs(position.x) + Math.Abs(position.y)).Min();
             Console.WriteLine("Closest distance from center = " + closest);
-            var rip = intersections.Select(inter => (FirstLine.Distinct().ToList().IndexOf(inter) + SecondLine.Distinct().ToList().IndexOf(inter))).First() + 2;
+            var rip = intersections.Select(inter => (_firstLine.Distinct().ToList().IndexOf(inter) + _secondLine.Distinct().ToList().IndexOf(inter))).First() + 2;
             Console.WriteLine(rip);
         }
         #endregion
@@ -41,36 +41,36 @@ namespace AOCDay3 {
             }
         }
         private void CROSSDOWN(int movement) {
-            var lastPos = SecondLine.Last();
-            var interection = FirstLine.Find(pos => pos.x == lastPos.x && pos.y <= lastPos.y && pos.y >= lastPos.y - movement);
+            var lastPos = _secondLine.Last();
+            var interection = _firstLine.Find(pos => pos.x == lastPos.x && pos.y <= lastPos.y && pos.y >= lastPos.y - movement);
             if (interection != null) {
-                Steps.Add(FirstLine.Distinct().ToList().IndexOf(interection) + SecondLine.Distinct().Count() - 1 + (lastPos.y - interection.y));
+                _steps.Add(_firstLine.Distinct().ToList().IndexOf(interection) + _secondLine.Distinct().Count() - 1 + (lastPos.y - interection.y));
             }
-            DOWN(movement, lastPos, SecondLine);
+            DOWN(movement, lastPos, _secondLine);
         }
         private void CROSSUP(int movement) {
-            var lastPos = SecondLine.Last();
-            var interection = FirstLine.Find(pos => pos.x == lastPos.x && pos.y >= lastPos.y && pos.y <= lastPos.y + movement);
+            var lastPos = _secondLine.Last();
+            var interection = _firstLine.Find(pos => pos.x == lastPos.x && pos.y >= lastPos.y && pos.y <= lastPos.y + movement);
             if (interection != null) {
-                Steps.Add(FirstLine.Distinct().ToList().IndexOf(interection) + SecondLine.Distinct().Count() - 1 + (interection.y - lastPos.y));
+                _steps.Add(_firstLine.Distinct().ToList().IndexOf(interection) + _secondLine.Distinct().Count() - 1 + (interection.y - lastPos.y));
             }
-            UP(movement, lastPos, SecondLine);
+            UP(movement, lastPos, _secondLine);
         }
         private void CROSSRIGHT(int movement) {
-            var lastPos = SecondLine.Last();
-            var interection = FirstLine.Find(pos => pos.y == lastPos.y && pos.x >= lastPos.x && pos.x <= lastPos.x + movement);
+            var lastPos = _secondLine.Last();
+            var interection = _firstLine.Find(pos => pos.y == lastPos.y && pos.x >= lastPos.x && pos.x <= lastPos.x + movement);
             if (interection != null) {
-                Steps.Add(FirstLine.Distinct().ToList().IndexOf(interection) + SecondLine.Distinct().Count() - 1 + (interection.x - lastPos.x));
+                _steps.Add(_firstLine.Distinct().ToList().IndexOf(interection) + _secondLine.Distinct().Count() - 1 + (interection.x - lastPos.x));
             }
-            RIGHT(movement, lastPos, SecondLine);
+            RIGHT(movement, lastPos, _secondLine);
         }
         private void CROSSLEFT(int movement) {
-            var lastPos = SecondLine.Last();
-            var interection = FirstLine.Find(pos => pos.y == lastPos.y && pos.x <= lastPos.x && pos.x >= lastPos.x - movement);
+            var lastPos = _secondLine.Last();
+            var interection = _firstLine.Find(pos => pos.y == lastPos.y && pos.x <= lastPos.x && pos.x >= lastPos.x - movement);
             if (interection != null) {
-                Steps.Add(FirstLine.Distinct().ToList().IndexOf(interection) + SecondLine.Distinct().Count() - 1 + (lastPos.x - interection.x));
+                _steps.Add(_firstLine.Distinct().ToList().IndexOf(interection) + _secondLine.Distinct().Count() - 1 + (lastPos.x - interection.x));
             }
-            LEFT(movement, lastPos, SecondLine);
+            LEFT(movement, lastPos, _secondLine);
         }
         #endregion
         #region FillLine
