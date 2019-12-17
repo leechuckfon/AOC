@@ -14,7 +14,7 @@ namespace AOCDay12.Tests {
         [TestMethod]
         public void ExampleInput2() {
             PuzzleSolver ps = new PuzzleSolver();
-            int result = ps.SolveX("input0.txt");
+            long result = ps.SolveX("input0.txt");
             Assert.AreEqual(2772, result);
         }
     }
