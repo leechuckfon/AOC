@@ -12,12 +12,9 @@ namespace AOCDay5 {
         private static long index = 0;
         private static bool running = true;
         private static long tracker = 0;
-        private static bool xPara;
-        private static bool yPara;
-        private static bool tId;
+        private static long x=0;
+        private static long y=0;
         private static long xVal;
-        private static long yVal;
-        private static long tIdVal;
         #endregion
         #region Main
         static void Main(string[] args) {
@@ -28,7 +25,7 @@ namespace AOCDay5 {
         public class Point {
             public long x { get; set; }
             public long y { get; set; }
-            public long type { get; set; }
+            public string type { get; set; }
         }
         #endregion
         #region Calculate
@@ -38,9 +35,6 @@ namespace AOCDay5 {
             for (long j = 0; j < 10000; j++) {
                 allInputs.Add(0);
             }
-            xPara = true;
-            yPara = false;
-            tId = false;
             allInputs[0] = 2;
             while (running) {
                 var instruction = allInputs[(int)index];
@@ -142,18 +136,20 @@ namespace AOCDay5 {
         }
         private static void opcode3(long[] modes) {
             var numberInput = 0;
-            if (passedCoordinates.Where(x => x.type == 4).Last().x < passedCoordinates.Where(x => x.type == 3).Last().x) {
-                numberInput -= 1;
-            }
-            else if (passedCoordinates.Where(x => x.type == 4).Last().x > passedCoordinates.Where(x => x.type == 3).Last().x) {
-                numberInput += 1;
-            }
+            //if (passedCoordinates.Where(x => x.type == 4).Last().x < passedCoordinates.Where(x => x.type == 3).Last().x) {
+            //    numberInput -= 1;
+            //}
+            //else if (passedCoordinates.Where(x => x.type == 4).Last().x > passedCoordinates.Where(x => x.type == 3).Last().x) {
+            //    numberInput += 1;
+            //}
+            Print();
+            numberInput = Int32.Parse(Console.ReadLine());
             long[] parameters = GetParameters(1);
             ReplaceIndex(parameters, modes);
             index += 2;
             long a = parameters[0];
             allInputs[(int)a] = numberInput;
-            Print();
+            //Print();
         }
         private static void opcode4(long[] modes) {
             long[] parameters = GetParameters(1);
@@ -168,23 +164,33 @@ namespace AOCDay5 {
             }
 
             switch (a) {
-                case 10: AddNL();  break;
+                case 10: AddNL(); break;
                 case 46: AddDot(); break;
                 case 35: AddScaff(); break;
             }
-           
+
         }
 
         private static void AddNL() {
-            throw new NotImplementedException();
+            y++;
         }
 
         private static void AddDot() {
-            throw new NotImplementedException();
+            passedCoordinates.Add(new Point() {
+                x = x,
+                y = y,
+                type = "."
+            });
+            x++;
         }
 
         private static void AddScaff() {
-            throw new NotImplementedException();
+            passedCoordinates.Add(new Point() {
+                x = x,
+                y = y,
+                type = "#"
+            });
+            x++;
         }
 
         private static void opcode9(long[] modes) {
@@ -259,7 +265,7 @@ namespace AOCDay5 {
                 }
                 Console.Write("\n");
             }
-            Console.WriteLine(passedCoordinates.Where(x => x.type == 4).Last().x + " " + passedCoordinates.Where(x => x.type == 4).Last().y);
+            //Console.WriteLine(passedCoordinates.Where(x => x.type == 4).Last().x + " " + passedCoordinates.Where(x => x.type == 4).Last().y);
         }
     }
     #endregion
