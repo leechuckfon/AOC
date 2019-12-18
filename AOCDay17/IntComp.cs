@@ -155,7 +155,7 @@ namespace AOCDay17 {
         private void opcode3(long[] modes) {
             needInput?.Invoke(this, null);
             while (input.Count == 0) {
-                
+                 
             }
             int numberInput = input.Dequeue();
             long[] parameters = GetParameters(1);
