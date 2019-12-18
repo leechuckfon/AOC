@@ -13,8 +13,6 @@ namespace AOCDay17 {
         private long index;
         private bool running;
         private long tracker;
-        private long x;
-        private long y;
         private long xVal;
         private long sum;
         private bool moving;
@@ -27,8 +25,6 @@ namespace AOCDay17 {
             input = new Queue<int>();
             output = new Queue<long>();
             tracker = 0;
-            x = 0;
-            y = 0;
             running = true;
             sum = 0;
             moving = false;
@@ -40,8 +36,8 @@ namespace AOCDay17 {
 
 
         #region Calculate
-        public void calc() {
-            InitMemory();
+        public void calc(bool enableInput) {
+            InitMemory(enableInput);
             QueuedInput = new List<int>();
             while (running) {
                 var instruction = allInputs[(int)index];
@@ -81,14 +77,16 @@ namespace AOCDay17 {
             }
         }
 
-        private void InitMemory() {
+        private void InitMemory(bool enableInput) {
             var lines = File.ReadAllLines("input.txt");
             allInputs = lines[0].Split(',').Select(numberAsString => Int64.Parse(numberAsString.ToString())).ToList();
             moving = false;
             for (long j = 0; j < 10000; j++) {
                 allInputs.Add(0);
             }
-            allInputs[0] = 2;
+            if (enableInput) {
+                allInputs[0] = 2;
+            }
 
         }
         #endregion
@@ -164,8 +162,6 @@ namespace AOCDay17 {
             moving = true;
             long a = parameters[0];
             allInputs[(int)a] = numberInput;
-
-            //Print();
         }
         private void opcode4(long[] modes) {
             long[] parameters = GetParameters(1);
@@ -180,45 +176,6 @@ namespace AOCDay17 {
             }
             queuedEvent?.Invoke(this, new QueuedEventArgs() { value = xVal });
 
-            switch (xVal) {
-                case 10: AddNL(); break;
-                case 46: AddDot(); break;
-                case 35: AddScaff(); break;
-                default: AddSomething(xVal); break;
-            }
-
-        }
-
-        private void AddSomething(long xVal) {
-            passedCoordinates.Add(new Point() {
-                x = x,
-                y = y,
-                type = (char)xVal
-            });
-            x++;
-        }
-
-        private void AddNL() {
-            y++;
-            x = 0;
-        }
-
-        private void AddDot() {
-            passedCoordinates.Add(new Point() {
-                x = x,
-                y = y,
-                type = '.'
-            });
-            x++;
-        }
-
-        private void AddScaff() {
-            passedCoordinates.Add(new Point() {
-                x = x,
-                y = y,
-                type = '#'
-            });
-            x++;
         }
 
         private void opcode9(long[] modes) {
@@ -282,48 +239,6 @@ namespace AOCDay17 {
             running = false;
 
 
-        }
-
-        private void Print() {
-            Console.Clear();
-            for (long i = passedCoordinates.Select(x => x.y).Min(); i <= passedCoordinates.Select(x => x.y).Max(); i++) {
-                var toWrite = passedCoordinates.Where(x => x.y == i);
-                for (long j = 0; j <= passedCoordinates.Select(x => x.x).Max(); j++) {
-                    if (toWrite.Where(x => x.x == j).LastOrDefault() != null) {
-                        var toAnalyze = toWrite.Where(x => x.x == j).LastOrDefault();
-                        if (CheckAround(toAnalyze)) {
-                            Console.Write("O");
-                        }
-                        else {
-                            Console.Write(toWrite.Where(x => x.x == j).LastOrDefault() is null ? '.' : toWrite.Where(x => x.x == j).LastOrDefault().type);
-                        }
-                    }
-                    else {
-                        Console.Write(".");
-                    }
-                }
-                Console.Write("\n");
-            }
-        }
-
-        private bool CheckAround(Point toAnalyze) {
-            if (toAnalyze.type != '#') {
-                return false;
-            }
-            if (passedCoordinates.Any(x => x.x == toAnalyze.x && x.y == toAnalyze.y + 1 && x.type == toAnalyze.type)) {
-
-                if (passedCoordinates.Any(x => x.x == toAnalyze.x && x.y == toAnalyze.y - 1 && x.type == toAnalyze.type)) {
-
-                    if (passedCoordinates.Any(x => x.x == toAnalyze.x + 1 && x.y == toAnalyze.y && x.type == toAnalyze.type)) {
-
-                        if (passedCoordinates.Any(x => x.x == toAnalyze.x - 1 && x.y == toAnalyze.y && x.type == toAnalyze.type)) {
-                            sum += toAnalyze.x * toAnalyze.y;
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
         }
     }
     #endregion
